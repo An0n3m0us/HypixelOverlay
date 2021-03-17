@@ -1,101 +1,87 @@
+
+
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Hypixel Overlay</title>
-
-	    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    </head>
-    <style>
+  <head>
+    <meta charset="utf-8">
+    <title>Hypixel Overlay</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  </head>
+  <style>
     html, body {
-        background-color: rgba(0,0,0,0.3);
+      background-color: rgba(0,0,0,0);
     }
-
     #container {
-        display: flex;
-        position: absolute;
-        bottom: 0;
-        top: 0;
-        left: 0;
-        right: 0;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-
-        background-color: rgba(0,0,0,0);
-        border: 7px solid #FFFFFF00;
-        color: #fff;
-        font-family: 'Minecraftia', serif;
-        font-size: 25px;
+      display: flex;
+      position: absolute;
+      bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background-color: rgba(0,0,0,0);
+      border: 7px solid #FFFFFF00;
+      color: #fff;
+      font-family: 'Minecraftia', serif;
+      font-size: 25px;
     }
-
     .statText {
-        color: rgb(85, 255, 85);
+      color: rgb(85, 255, 85);
     }
-
-    </style>
-
-    <body>
-
-        <div id="container">
-            <div id="activity" style="margin-top: -2px;">
-                <span id="itemStat" class="statText">?</span><span>&nbsp;<span id="itemDisplay">?</span></span>
-            </div>
-        </div>
-
-        <script>
-            // API settings
-            var api_key = "" // Your Hypixel API key
-            var uuid = "" // Your uuid
+  </style>
+<body>
+    <div id="container">
+      <div id="activity" style="margin-top: -2px;">
+        <span id="itemStat" class="statText">?</span><span>&nbsp;<span id="itemDisplay">?</span></span>
+      </div>
+    </div>
+    <script>
+    // API settings
+    var api_key = "" // Your Hypixel API key
+    var uuid = "" // Your uuid
 
 
 
+    const urlParams = new URLSearchParams(window.location.search);
+    document.getElementById("itemDisplay").innerText = urlParams.get('text') || "winstreak";
 
-						const urlParams = new URLSearchParams(window.location.search);
-            document.getElementById("itemDisplay").innerText = urlParams.get('text') || "winstreak";
+    var gameType = "";
+    var gameMode = "";
 
-            var gameType = "";
-            var gameMode = "";
+    function loop() {
+        $.getJSON("https://api.hypixel.net/status?key=" + api_key + "&uuid=" + uuid, function(apidata) {
+            if (apidata["session"]["online"] == true) {
+                if (apidata["session"]["gameType"] == "BEDWARS") {
+                    gameType = "Bedwars";
+                } else if (apidata["session"]["gameType"] == "SKYWARS") {
+                    gameType = "SkyWars";
+                } else {
+                    gameType = "";
+                }
 
-            function loop() {
-
-                $.getJSON("https://api.hypixel.net/status?key=" + api_key + "&uuid=" + uuid, function(apidata) {
-
-                    if (apidata["session"]["online"] == true) {
-                        if (apidata["session"]["gameType"] == "BEDWARS") {
-                            gameType = "Bedwars";
-                        } else if (apidata["session"]["gameType"] == "SKYWARS") {
-                            gameType = "SkyWars";
-                        } else {
-                            gameType = "";
-                        }
-
-                        if (apidata["session"]["mode"] != "LOBBY" && apidata["session"]["mode"] != "PRACTICE") {
-                            gameMode = apidata["session"]["mode"].toLowerCase();
-                        }
-
-                        $.getJSON("https://api.hypixel.net/player?key=" + api_key + "&uuid=" + uuid, function(apidata) {
-
-                            if (apidata["player"]["stats"][gameType][gameMode + "_winstreak"] != undefined) {
-                                document.getElementById("itemStat").innerText = apidata["player"]["stats"][gameType][gameMode + "_winstreak"];
-                            } else if (apidata["player"]["stats"][gameType]["win_streak"] != undefined) {
-                                document.getElementById("itemStat").innerText = apidata["player"]["stats"][gameType]["win_streak"];
-                            } else {
-                                document.getElementById("itemStat").innerText = "?";
-                            }
-
-                        });
+                if (apidata["session"]["mode"] != "LOBBY" && apidata["session"]["mode"] != "PRACTICE") {
+                    gameMode = apidata["session"]["mode"].toLowerCase();
+                }
+                $.getJSON("https://api.hypixel.net/player?key=" + api_key + "&uuid=" + uuid, function(apidata) {
+                    if (apidata["player"]["stats"][gameType][gameMode + "_winstreak"] != undefined) {
+                        document.getElementById("itemStat").innerText = apidata["player"]["stats"][gameType][gameMode + "_winstreak"];
+                    } else if (apidata["player"]["stats"][gameType]["win_streak"] != undefined) {
+                        document.getElementById("itemStat").innerText = apidata["player"]["stats"][gameType]["win_streak"];
+                    } else {
+                        document.getElementById("itemStat").innerText = "?";
                     }
-
                 });
+            }
+        });
 
-                setTimeout(function () {
-                    loop();
-                }, 3 * 1000); // 3-second timeout
-            };
-
+        setTimeout(function () {
             loop();
-        </script>
+        }, 3 * 1000); // 3-second timeout
+    };
 
-    </body>
+    loop();
+    </script>
+  </body>
 </html>
