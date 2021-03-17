@@ -8,7 +8,7 @@
     </head>
     <style>
     html, body {
-        background-color: rgba(0,0,0,0);
+        background-color: rgba(0,0,0,0.3);
     }
 
     #container {
@@ -39,7 +39,7 @@
 
         <div id="container">
             <div id="activity" style="margin-top: -2px;">
-                <span id="item1Stat" class="statText">?</span><span>&nbsp;<span id="item2Display">?</span></span>
+                <span id="itemStat" class="statText">?</span><span>&nbsp;<span id="itemDisplay">?</span></span>
             </div>
         </div>
 
@@ -48,13 +48,15 @@
             var api_key = "" // Your Hypixel API key
             var uuid = "" // Your uuid
 
-            // Other settings
-            var item2Display = "winstreak";
 
-            document.getElementById("item2Display").innerHTML = item2Display;
+
+
+						const urlParams = new URLSearchParams(window.location.search);
+            document.getElementById("itemDisplay").innerText = urlParams.get('text') || "winstreak";
 
             var gameType = "";
             var gameMode = "";
+
             function loop() {
 
                 $.getJSON("https://api.hypixel.net/status?key=" + api_key + "&uuid=" + uuid, function(apidata) {
@@ -75,11 +77,11 @@
                         $.getJSON("https://api.hypixel.net/player?key=" + api_key + "&uuid=" + uuid, function(apidata) {
 
                             if (apidata["player"]["stats"][gameType][gameMode + "_winstreak"] != undefined) {
-                                document.getElementById("item1Stat").innerHTML = apidata["player"]["stats"][gameType][gameMode + "_winstreak"];
+                                document.getElementById("itemStat").innerText = apidata["player"]["stats"][gameType][gameMode + "_winstreak"];
                             } else if (apidata["player"]["stats"][gameType]["win_streak"] != undefined) {
-                                document.getElementById("item1Stat").innerHTML = apidata["player"]["stats"][gameType]["win_streak"];
+                                document.getElementById("itemStat").innerText = apidata["player"]["stats"][gameType]["win_streak"];
                             } else {
-                                document.getElementById("item1Stat").innerHTML = "?";
+                                document.getElementById("itemStat").innerText = "?";
                             }
 
                         });
