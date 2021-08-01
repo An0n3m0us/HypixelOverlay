@@ -62,7 +62,7 @@
                 }
 
                 if (apidata["session"]["mode"] != "LOBBY" && apidata["session"]["mode"] != "PRACTICE") {
-                    gameMode = apidata["session"]["mode"].toLowerCase();
+                    gameMode = apidata["session"]["mode"].toLowerCase().replace("bedwars_", "");
                 }
                 $.getJSON("https://api.hypixel.net/player?key=" + api_key + "&uuid=" + uuid, function(apidata) {
                     if (apidata["player"]["stats"][gameType][gameMode + "_winstreak"] != undefined) {
