@@ -35,6 +35,10 @@
           <span id="winstreakNum" style="color:#55FF55">?</span>
           <span>winstreak</span>
         </div>
+        <div id="fkdrStats" style="display:none">
+          <span id="fkdrNum">?</span>
+          <span>fdkr</span>
+        </div>
         <div id="winlossStats" style="display:none">
           <span id="winlossList">
             <span style="color:#000"> █</span>
@@ -69,6 +73,7 @@
     var overlayType = hypixel.type;
     container = document.getElementById("container");
     winstreakEl = document.getElementById("winstreakNum");
+    fkdrEl = document.getElementById("fkdrNum");
     winlossEl = document.getElementById("winlossList");
 
     // Hypixel variables
@@ -76,7 +81,7 @@
     var gameMode = "";
 
     // Bedwars variables
-    var bedwarsStats = {"wins": -1, "losses": -1}
+    var bedwarsStats = {"wins": -1, "losses": -1, "final_kills": -1, "final_deaths": -1}
 
     // Only show queried overlay type
     Array.from(container.children[0].children).forEach((el) => { el.style.display = "none" });
@@ -102,6 +107,22 @@
                             // Winstreak overlay
                             if (overlayType == "winstreak" && (gameMode + "_winstreak") in apiStats) {
                                 winstreakEl.innerText = apiStats[gameMode + "_winstreak"];
+                            }
+
+                            // FKDR overlay (ratio number / actual ratio)
+                            if (overlayType == "fkdr") {
+                                if (bedwarsStats.final_kills == -1) {
+                                    bedwarsStats.final_kills = apiStats["final_kills_bedwars"];
+                                }
+                                if (bedwarsStats.final_deaths == -1) {
+                                    bedwarsStats.final_deaths = apiStats["final_deaths_bedwars"];
+                                }
+
+                                fkdrStats = {
+                                  "kills": apiStats["final_kills_bedwars"] - bedwarsStats.final_kills,
+                                  "deaths": apiStats["final_deaths_bedwars"] - bedwarsStats.final_deaths
+                                };
+                                fkdrEl.innerHTML = "<span style='color:#55FF55'>" + fkdrStats.kills + "</span>:<span style='color:#FF5555'>" + fkdrStats.deaths + "</span> <span>(" + fkdrStats.kills/fkdrStats.deaths + ")</span>";
                             }
 
                             // Winloss overlay
