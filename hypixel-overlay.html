@@ -76,8 +76,7 @@
     var gameMode = "";
 
     // Bedwars variables
-    var bedwarsWins = -1;
-    var bedwarsLosses = -1;
+    var bedwarsWL = {"wins": -1, "losses": -1}
 
     // Only show queried overlay type
     Array.from(container.children[0].children).forEach((el) => { el.style.display = "none" });
@@ -109,16 +108,16 @@
                             if (overlayType == "winloss") {
 
                                 // Add games if new data
-                                if (bedwarsWins != -1 && bedwarsWins < stats["wins_bedwars"]) {
-                                    winlossEl.innerHTML += "<span style='color:#55FF55'> █</span>".repeat(stats["wins_bedwars"] - bedwarsWins);
+                                if (bedwars.wins != -1 && bedwars.wins < stats["wins_bedwars"]) {
+                                    winlossEl.innerHTML += "<span style='color:#55FF55'> █</span>".repeat(stats["wins_bedwars"] - bedwars.wins);
                                 }
-                                if (bedwarsLosses != -1 && bedwarsLosses < stats["losses_bedwars"]) {
-                                    winlossEl.innerHTML += "<span style='color:#FF5555'> █</span>".repeat(stats["losses_bedwars"] - bedwarsLosses);
+                                if (bedwars.losses != -1 && bedwars.losses < stats["losses_bedwars"]) {
+                                    winlossEl.innerHTML += "<span style='color:#FF5555'> █</span>".repeat(stats["losses_bedwars"] - bedwars.losses);
                                 }
 
                                 // Update our data
-                                bedwarsWins = stats["wins_bedwars"];
-                                bedwarsLosses = stats["losses_bedwars"];
+                                bedwars.wins = stats["wins_bedwars"];
+                                bedwars.losses = stats["losses_bedwars"];
 
                                 // Limit to 10 games
                                 if (winlossList.children.length > 10) {
