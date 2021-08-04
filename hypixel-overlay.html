@@ -9,7 +9,7 @@
   </head>
   <style>
     html, body {
-      background-color: rgba(0,0,0,0);
+      background-color: rgba(0,0,0,0.5);
     }
     #container {
       display: flex;
@@ -122,7 +122,7 @@
                                   "kills": apiStats["final_kills_bedwars"] - bedwarsStats.final_kills,
                                   "deaths": apiStats["final_deaths_bedwars"] - bedwarsStats.final_deaths
                                 };
-                                fkdrEl.innerHTML = "<span style='color:#55FF55'>" + fkdrStats.kills + "</span>:<span style='color:#FF5555'>" + fkdrStats.deaths + "</span> <span>(" + fkdrStats.kills/fkdrStats.deaths + ")</span>";
+                                fkdrEl.innerHTML = "<span style='color:#55FF55'>" + fkdrStats.kills + "</span>:<span style='color:#FF5555'>" + fkdrStats.deaths + "</span> <span>(<span style='color:#FFAA00'>" + Math.round((fkdrStats.kills/fkdrStats.deaths)*10)/10 + "</span>)</span>";
                             }
 
                             // Winloss overlay
