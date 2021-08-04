@@ -52,8 +52,19 @@
       </div>
     </div>
     <script>
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const hypixel = Object.fromEntries(urlSearchParams.entries());
+
+    // Get settings via parameters
+    var hypixel = {};
+    (window.location.search.split("&")).forEach(function(param, index){
+        parameter = param.split("=")
+
+        if (index == 0) {
+            hypixel[parameter[0].slice(1)] = parameter[1];
+        } else {
+            hypixel[parameter[0]] = parameter[1];
+        }
+    });
+
     var displayType = hypixel.type;
     container = document.getElementById("container");
     winstreakEl = document.getElementById("winstreakNum");
