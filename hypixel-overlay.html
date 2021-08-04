@@ -65,20 +65,23 @@
         }
     });
 
-    var displayType = hypixel.type;
+    // General variables
+    var overlayType = hypixel.type;
     container = document.getElementById("container");
     winstreakEl = document.getElementById("winstreakNum");
     winlossEl = document.getElementById("winlossList");
 
+    // Hypixel variables
     var gameType = "";
     var gameMode = "";
 
-    // Bedwars
+    // Bedwars variables
     var bedwarsWins = -1;
     var bedwarsLosses = -1;
 
+    // Only show queried overlay type
     Array.from(container.children[0].children).forEach((el) => { el.style.display = "none" });
-    document.getElementById(displayType + "Stats").style.display = "block";
+    document.getElementById(overlayType + "Stats").style.display = "block";
 
     function loop() {
         $.getJSON("https://api.hypixel.net/status?key=" + hypixel.key + "&uuid=" + hypixel.uuid, function(statusdata) {
@@ -89,14 +92,23 @@
                 gameType = (session.gameType == "BEDWARS" ? "Bedwars" : session.gameType == "SKYWARS" ? "SkyWars" : "")
                 gameMode = session.mode.toLowerCase().replace("bedwars_", "");
 
+                // Only supports Bedwars and SkyWars yet
                 if (gameType.match(/^(Bedwars|SkyWars)$/)) {
                     $.getJSON("https://api.hypixel.net/player?key=" + hypixel.key + "&uuid=" + hypixel.uuid, function(playerdata) {
                         stats = playerdata.player.stats[gameType];
 
+                        // Bedwars
                         if (gameType == "Bedwars") {
-                            if (displayType == "winstreak" && (gameMode + "_winstreak") in stats) {
-                                winstreakEl.innerText = stats[gameMode + "_winstreak"]
-                            } else if (displayType == "winloss") {
+
+                            // Winstreak overlay
+                            if (overlayType == "winstreak" && (gameMode + "_winstreak") in stats) {
+                                winstreakEl.innerText = stats[gameMode + "_winstreak"];
+                            }
+
+                            // Winloss overlay
+                            if (overlayType == "winloss") {
+
+                                // Add games if new data
                                 if (bedwarsWins != -1 && bedwarsWins < stats["wins_bedwars"]) {
                                     winlossEl.innerHTML += "<span style='color:#55FF55'> █</span>".repeat(stats["wins_bedwars"] - bedwarsWins);
                                 }
@@ -104,6 +116,7 @@
                                     winlossEl.innerHTML += "<span style='color:#FF5555'> █</span>".repeat(stats["losses_bedwars"] - bedwarsLosses);
                                 }
 
+                                // Update our data
                                 bedwarsWins = stats["wins_bedwars"];
                                 bedwarsLosses = stats["losses_bedwars"];
 
@@ -111,12 +124,16 @@
                                 if (winlossList.children.length > 10) {
                                     count = winlossList.children.length - 10;
 
+                                    // Remove older games
                                     for (var index = 0; index < count; index += 1) {
                                         winlossList.removeChild(winlossList.children[0])
                                     }
                                 }
                             }
-                        } else if (gameType == "SkyWars") {
+                        }
+
+                        // SkyWars
+                        if (gameType == "SkyWars") {
                             winstreakEl.innerText = stats["win_streak"];
                         }
                     });
@@ -127,9 +144,10 @@
             }
         });
 
+        // 3-second timeout
         setTimeout(function () {
             loop();
-        }, 3 * 1000); // 3-second timeout
+        }, 3 * 1000);
     };
 
     loop();
