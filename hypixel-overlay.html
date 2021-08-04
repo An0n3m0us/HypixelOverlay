@@ -76,7 +76,7 @@
     var gameMode = "";
 
     // Bedwars variables
-    var bedwarsWL = {"wins": -1, "losses": -1}
+    var bedwarsStats = {"wins": -1, "losses": -1}
 
     // Only show queried overlay type
     Array.from(container.children[0].children).forEach((el) => { el.style.display = "none" });
@@ -94,30 +94,30 @@
                 // Only supports Bedwars and SkyWars yet
                 if (gameType.match(/^(Bedwars|SkyWars)$/)) {
                     $.getJSON("https://api.hypixel.net/player?key=" + hypixel.key + "&uuid=" + hypixel.uuid, function(playerdata) {
-                        stats = playerdata.player.stats[gameType];
+                        apiStats = playerdata.player.stats[gameType];
 
                         // Bedwars
                         if (gameType == "Bedwars") {
 
                             // Winstreak overlay
-                            if (overlayType == "winstreak" && (gameMode + "_winstreak") in stats) {
-                                winstreakEl.innerText = stats[gameMode + "_winstreak"];
+                            if (overlayType == "winstreak" && (gameMode + "_winstreak") in apiStats) {
+                                winstreakEl.innerText = apiStats[gameMode + "_winstreak"];
                             }
 
                             // Winloss overlay
                             if (overlayType == "winloss") {
 
                                 // Add games if new data
-                                if (bedwars.wins != -1 && bedwars.wins < stats["wins_bedwars"]) {
-                                    winlossEl.innerHTML += "<span style='color:#55FF55'> █</span>".repeat(stats["wins_bedwars"] - bedwars.wins);
+                                if (bedwarsStats.wins != -1 && bedwarsStats.wins < apiStats["wins_bedwars"]) {
+                                    winlossEl.innerHTML += "<span style='color:#55FF55'> █</span>".repeat(apiStats["wins_bedwars"] - bedwarsStats.wins);
                                 }
-                                if (bedwars.losses != -1 && bedwars.losses < stats["losses_bedwars"]) {
-                                    winlossEl.innerHTML += "<span style='color:#FF5555'> █</span>".repeat(stats["losses_bedwars"] - bedwars.losses);
+                                if (bedwarsStats.losses != -1 && bedwarsStats.losses < apiStats["losses_bedwars"]) {
+                                    winlossEl.innerHTML += "<span style='color:#FF5555'> █</span>".repeat(apiStats["losses_bedwars"] - bedwarsStats.losses);
                                 }
 
                                 // Update our data
-                                bedwars.wins = stats["wins_bedwars"];
-                                bedwars.losses = stats["losses_bedwars"];
+                                bedwarsStats.wins = apiStats["wins_bedwars"];
+                                bedwarsStats.losses = apiStats["losses_bedwars"];
 
                                 // Limit to 10 games
                                 if (winlossList.children.length > 10) {
@@ -133,7 +133,7 @@
 
                         // SkyWars
                         if (gameType == "SkyWars") {
-                            winstreakEl.innerText = stats["win_streak"];
+                            winstreakEl.innerText = apiStats["win_streak"];
                         }
                     });
                 } else {
