@@ -31,26 +31,30 @@
 <body>
     <div id="container">
       <div id="activity" style="margin-top: -2px;">
-        <span id="statText"></span>
+        <div id="winstreakStats" style="display:none">
+          <span id="winstreakNum" style="color:#55FF55">?</span>
+          <span>winstreak</span>
+        </div>
+        <div id="winsStats" style="display:none">
+          <span id="winsList">?</span>
+        </div>
+
       </div>
     </div>
     <script>
     const urlSearchParams = new URLSearchParams(window.location.search);
     const hypixel = Object.fromEntries(urlSearchParams.entries());
 
-    var displayType = "winstreak"
+    var displayType = hypixel.type;
+    container = document.getElementById("activity");
+
+    Array.from(container.children).forEach((el) => { el.style.display = "none" });
+    document.getElementById(displayType + "Stats").style.display = "block";
+
+
 
     container = document.getElementById("activity");
-    statEl = document.getElementById("statText");
-
-    if (displayType == "winstreak") {
-      statEl.innerText = "?";
-      statEl.style.color = "#55FF55";
-
-      displayText = document.createElement("span");
-      displayText.innerText = "winstreak";
-      container.appendChild(displayText);
-    }
+    wsStatsEl = document.getElementById("winstreakNum");
 
     var gameType = "";
     var gameMode = "";
@@ -64,17 +68,17 @@
                 gameType = (session.gameType == "BEDWARS" ? "Bedwars" : session.gameType == "SKYWARS" ? "SkyWars" : "")
                 gameMode = session.mode.toLowerCase().replace("bedwars_", "");
 
-                if (gameType.match(/Bedwars|SkyWars/g)) {
+                if (gameType.match(/^(Bedwars|SkyWars)$/)) {
                     $.getJSON("https://api.hypixel.net/player?key=" + hypixel.key + "&uuid=" + hypixel.uuid, function(playerdata) {
                         stats = playerdata.player.stats[gameType];
 
                         if (displayType == "winstreak") {
-                            statEl.innerText = ((gameType == "Bedwars" && (gameMode + "_winstreak") in stats) ? stats[gameMode + "_winstreak"] : "?")
-                            statEl.innerText = ((gameType == "SkyWars") ? stats["win_streak"] : "?")
+                            wsStatEl.innerText = ((gameType == "Bedwars" && (gameMode + "_winstreak") in stats) ? stats[gameMode + "_winstreak"] : "?")
+                            wsStatEl.innerText = ((gameType == "SkyWars") ? stats["win_streak"] : "?")
                         }
                     });
                 } else {
-                    statEl.innerText = "?";
+                    wsStatEl.innerText = "?";
                 }
             }
         });
