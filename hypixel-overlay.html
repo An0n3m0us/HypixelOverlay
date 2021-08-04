@@ -35,12 +35,10 @@
       </div>
     </div>
     <script>
-    // API settings
-    var api_key = "" // Your Hypixel API key
-    var uuid = "" // Your uuid
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const hypixel = Object.fromEntries(urlSearchParams.entries());
+
     var displayType = "winstreak"
-
-
 
     container = document.getElementById("activity");
     statEl = document.getElementById("statText");
@@ -58,7 +56,7 @@
     var gameMode = "";
 
     function loop() {
-        $.getJSON("https://api.hypixel.net/status?key=" + api_key + "&uuid=" + uuid, function(statusdata) {
+        $.getJSON("https://api.hypixel.net/status?key=" + hypixel.key + "&uuid=" + hypixel.uuid, function(statusdata) {
             session = statusdata.session;
 
             if (session.online == true) {
@@ -67,7 +65,7 @@
                 gameMode = session.mode.toLowerCase().replace("bedwars_", "");
 
                 if (gameType.match(/Bedwars|SkyWars/g)) {
-                    $.getJSON("https://api.hypixel.net/player?key=" + api_key + "&uuid=" + uuid, function(playerdata) {
+                    $.getJSON("https://api.hypixel.net/player?key=" + hypixel.key + "&uuid=" + hypixel.uuid, function(playerdata) {
                         stats = playerdata.player.stats[gameType];
 
                         if (displayType == "winstreak") {
