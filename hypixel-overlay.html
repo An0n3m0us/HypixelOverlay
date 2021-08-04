@@ -20,6 +20,7 @@
       right: 0;
       align-items: center;
       text-align: center;
+      justify-content: center;
       background-color: rgba(0,0,0,0);
       border: 7px solid #FFFFFF00;
       color: #fff;
@@ -28,7 +29,7 @@
     }
   </style>
 <body>
-    <div id="container" style="justify-content:center">
+    <div id="container">
       <div id="activity" style="margin-top:-2px;">
         <div id="winstreakStats" style="display:none">
           <span id="winstreakNum" style="color:#55FF55">?</span>
@@ -57,13 +58,6 @@
     Array.from(container.children[0].children).forEach((el) => { el.style.display = "none" });
     document.getElementById(displayType + "Stats").style.display = "block";
 
-    displayType == "winstreak" ?
-    container.style.justifyContent = "center"
-    : displayType == "winloss" ?
-    container.style.justifyContent = "left"
-    :
-    container.style.justifyContent = "center"
-
     function loop() {
         $.getJSON("https://api.hypixel.net/status?key=" + hypixel.key + "&uuid=" + hypixel.uuid, function(statusdata) {
             session = statusdata.session;
@@ -90,6 +84,15 @@
 
                                 bedwarsWins = stats["wins_bedwars"];
                                 bedwarsLosses = stats["losses_bedwars"];
+
+                                // Limit to 10 games
+                                if (winlossList.children.length > 10) {
+                                    count = winlossList.children.length - 10;
+
+                                    for (var index = 0; index < count; index += 1) {
+                                        winlossList.removeChild(winlossList.children[0])
+                                    }
+                                }
                             }
                         } else if (gameType == "SkyWars") {
                             winstreakEl.innerText = stats["win_streak"];
