@@ -19,7 +19,6 @@
       left: 0;
       right: 0;
       align-items: center;
-      justify-content: center;
       text-align: center;
       background-color: rgba(0,0,0,0);
       border: 7px solid #FFFFFF00;
@@ -29,8 +28,8 @@
     }
   </style>
 <body>
-    <div id="container">
-      <div id="activity" style="margin-top: -2px;">
+    <div id="container" style="justify-content:center">
+      <div id="activity" style="margin-top:-2px;">
         <div id="winstreakStats" style="display:none">
           <span id="winstreakNum" style="color:#55FF55">?</span>
           <span>winstreak</span>
@@ -43,15 +42,8 @@
     <script>
     const urlSearchParams = new URLSearchParams(window.location.search);
     const hypixel = Object.fromEntries(urlSearchParams.entries());
-
     var displayType = hypixel.type;
     container = document.getElementById("container");
-
-    Array.from(container.children[0].children).forEach((el) => { el.style.display = "none" });
-    document.getElementById(displayType + "Stats").style.display = "block";
-
-
-
     winstreakEl = document.getElementById("winstreakNum");
     winlossEl = document.getElementById("winlossList");
 
@@ -61,6 +53,16 @@
     // Bedwars
     var bedwarsWins = -1;
     var bedwarsLosses = -1;
+
+    Array.from(container.children[0].children).forEach((el) => { el.style.display = "none" });
+    document.getElementById(displayType + "Stats").style.display = "block";
+
+    displayType == "winstreak" ?
+    container.style.justifyContent = "center"
+    : displayType == "winloss" ?
+    container.style.justifyContent = "left"
+    :
+    container.style.justifyContent = "center"
 
     function loop() {
         $.getJSON("https://api.hypixel.net/status?key=" + hypixel.key + "&uuid=" + hypixel.uuid, function(statusdata) {
@@ -80,16 +82,15 @@
                                 winstreakEl.innerText = stats[gameMode + "_winstreak"]
                             } else if (displayType == "winloss") {
                                 if (bedwarsWins != -1 && bedwarsWins < stats["wins_bedwars"]) {
-                                    winlossEl.innerHTML = winlossEl.innerHTML + "<span style='color:#55FF55'> █</span>".repeat(stats["wins_bedwars"] - bedwarsWins);
+                                    winlossEl.innerHTML += "<span style='color:#55FF55'> █</span>".repeat(stats["wins_bedwars"] - bedwarsWins);
                                 }
                                 if (bedwarsLosses != -1 && bedwarsLosses < stats["losses_bedwars"]) {
-                                    winlossEl.innerHTML = winlossEl.innerHTML + "<span style='color:#FF5555'> █</span>".repeat(stats["losses_bedwars"] - bedwarsLosses);
+                                    winlossEl.innerHTML += "<span style='color:#FF5555'> █</span>".repeat(stats["losses_bedwars"] - bedwarsLosses);
                                 }
 
                                 bedwarsWins = stats["wins_bedwars"];
                                 bedwarsLosses = stats["losses_bedwars"];
                             }
-
                         } else if (gameType == "SkyWars") {
                             winstreakEl.innerText = stats["win_streak"];
                         }
