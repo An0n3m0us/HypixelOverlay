@@ -9,7 +9,7 @@
   </head>
   <style>
     html, body {
-      background-color: rgba(0,0,0,0);
+      background-color: rgba(0,0,0,0.5);
     }
     #container {
       display: flex;
@@ -18,9 +18,9 @@
       top: 0;
       left: 0;
       right: 0;
-      align-items: center;
-      text-align: center;
-      justify-content: center;
+      align-items: left;
+      text-align: left;
+      justify-content: left;
       background-color: rgba(0,0,0,0);
       border: 7px solid #FFFFFF00;
       color: #fff;
@@ -32,12 +32,12 @@
     <div id="container">
       <div id="activity" style="margin-top:-2px;">
         <div id="winstreakStats" style="display:none">
+          <span>Winstreak:</span>
           <span id="winstreakNum" style="color:#55FF55">?</span>
-          <span>winstreak</span>
         </div>
         <div id="fkdrStats" style="display:none">
+          <span>Session FKDR:</span>
           <span id="fkdrNum">?:? (?)</span>
-          <span>fdkr</span>
         </div>
         <div id="winlossStats" style="display:none">
           <span id="winlossList">
@@ -65,12 +65,11 @@
         if (index == 0) {
             hypixel[parameter[0].slice(1)] = parameter[1];
         } else {
-            hypixel[parameter[0]] = parameter[1];
+            hypixel[parameter[0]] = parameter[1].split(",");
         }
     });
 
     // General variables
-    var overlayType = hypixel.type;
     container = document.getElementById("container");
     winstreakEl = document.getElementById("winstreakNum");
     fkdrEl = document.getElementById("fkdrNum");
@@ -85,7 +84,7 @@
 
     // Only show queried overlay type
     Array.from(container.children[0].children).forEach((el) => { el.style.display = "none" });
-    document.getElementById(overlayType + "Stats").style.display = "block";
+    hypixel.type.forEach((type) => { document.getElementById(type + "Stats").style.display = "block" });
 
     function loop() {
         $.getJSON("https://api.hypixel.net/status?key=" + hypixel.key + "&uuid=" + hypixel.uuid, function(statusdata) {
@@ -105,12 +104,12 @@
                         if (gameType == "Bedwars") {
 
                             // Winstreak overlay
-                            if (overlayType == "winstreak" && (gameMode + "_winstreak") in apiStats) {
+                            if (hypixel.type.includes("winstreak") && (gameMode + "_winstreak") in apiStats) {
                                 winstreakEl.innerText = apiStats[gameMode + "_winstreak"];
                             }
 
                             // FKDR overlay
-                            if (overlayType == "fkdr") {
+                            if (hypixel.type.includes("fkdr")) {
                                 if (bedwarsStats.final_kills == -1) {
                                     bedwarsStats.final_kills = apiStats["final_kills_bedwars"];
                                 }
@@ -131,7 +130,7 @@
                             }
 
                             // Winloss overlay
-                            if (overlayType == "winloss") {
+                            if (hypixel.type.includes("winloss")) {
 
                                 // Add games if new data
                                 if (bedwarsStats.wins != -1 && bedwarsStats.wins < apiStats["wins_bedwars"]) {
