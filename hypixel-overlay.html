@@ -9,7 +9,7 @@
   </head>
   <style>
     html, body {
-      background-color: rgba(0,0,0,0.5);
+      background-color: rgba(0,0,0,0);
     }
     #container {
       display: flex;
@@ -36,7 +36,7 @@
           <span>winstreak</span>
         </div>
         <div id="fkdrStats" style="display:none">
-          <span id="fkdrNum">?</span>
+          <span id="fkdrNum">?:? (?)</span>
           <span>fdkr</span>
         </div>
         <div id="winlossStats" style="display:none">
@@ -109,7 +109,7 @@
                                 winstreakEl.innerText = apiStats[gameMode + "_winstreak"];
                             }
 
-                            // FKDR overlay (ratio number / actual ratio)
+                            // FKDR overlay
                             if (overlayType == "fkdr") {
                                 if (bedwarsStats.final_kills == -1) {
                                     bedwarsStats.final_kills = apiStats["final_kills_bedwars"];
@@ -122,7 +122,12 @@
                                   "kills": apiStats["final_kills_bedwars"] - bedwarsStats.final_kills,
                                   "deaths": apiStats["final_deaths_bedwars"] - bedwarsStats.final_deaths
                                 };
-                                fkdrEl.innerHTML = "<span style='color:#55FF55'>" + fkdrStats.kills + "</span>:<span style='color:#FF5555'>" + fkdrStats.deaths + "</span> <span>(<span style='color:#FFAA00'>" + Math.round((fkdrStats.kills/fkdrStats.deaths)*10)/10 + "</span>)</span>";
+                                fkdrEl.innerHTML = "<span style='color:#55FF55'>" + fkdrStats.kills + "</span>:<span style='color:#FF5555'>" + fkdrStats.deaths + "</span>";
+                                if (fkdrStats.kills != 0 && fkdrStats.deaths != 0) {
+                                    fkdrEl.innerHTML += " <span>(<span style='color:#FFAA00'>" + Math.round((fkdrStats.kills/fkdrStats.deaths)*10)/10 + "</span>)</span>";
+                                } else {
+                                    fkdrEl.innerHTML += " <span>(<span style='color:#FFAA00'>?</span>)</span>";
+                                }
                             }
 
                             // Winloss overlay
