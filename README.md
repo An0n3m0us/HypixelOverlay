@@ -6,4 +6,4 @@ A browser-based overlay for tracking your Hypixel statistics live.
 
 Example of usage:
 
-YTThatOneGuy: https://www.youtube.com/watch?v=ngrND_OJh1I
+https://www.twitch.tv/videos/1111902274
