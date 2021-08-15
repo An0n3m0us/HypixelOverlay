@@ -7,3 +7,7 @@ A browser-based overlay for tracking your Hypixel statistics live.
 Example of usage:
 
 https://www.twitch.tv/videos/1111902274
+
+## Contributing
+
+Please edit the `dev.html` file as the `hypixel-overlay.html` is for hosting a stable version!
