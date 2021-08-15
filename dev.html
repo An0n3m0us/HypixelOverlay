@@ -37,6 +37,20 @@
           <span>Session FKDR:</span>
           <span id="fkdrNum">?:? (?)</span>
         </div>
+        <div id="winlossStats" style="display:none">
+          <span id="winlossList">
+            <span style="color:#000"> █</span>
+            <span style="color:#000"> █</span>
+            <span style="color:#000"> █</span>
+            <span style="color:#000"> █</span>
+            <span style="color:#000"> █</span>
+            <span style="color:#000"> █</span>
+            <span style="color:#000"> █</span>
+            <span style="color:#000"> █</span>
+            <span style="color:#000"> █</span>
+            <span style="color:#000"> █</span>
+          </span>
+        </div>
       </div>
     </div>
     <script>
@@ -57,6 +71,7 @@
     container = document.getElementById("container");
     winstreakEl = document.getElementById("winstreakNum");
     fkdrEl = document.getElementById("fkdrNum");
+    winlossEl = document.getElementById("winlossList");
 
     // Hypixel variables
     var gameType = "";
@@ -112,6 +127,32 @@
                                     fkdrEl.innerHTML += " <span>(<span style='color:#FFAA00'>?</span>)</span>";
                                 }
                             }
+
+                            // Winloss overlay
+                            if (hypixel.type.includes("winloss")) {
+
+                                // Add games if new data
+                                if (bedwarsStats.wins != -1 && bedwarsStats.wins < apiStats["wins_bedwars"]) {
+                                    winlossEl.innerHTML += "<span style='color:#55FF55'> █</span>".repeat(apiStats["wins_bedwars"] - bedwarsStats.wins);
+                                }
+                                if (bedwarsStats.losses != -1 && bedwarsStats.losses < apiStats["losses_bedwars"]) {
+                                    winlossEl.innerHTML += "<span style='color:#FF5555'> █</span>".repeat(apiStats["losses_bedwars"] - bedwarsStats.losses);
+                                }
+
+                                // Update our data
+                                bedwarsStats.wins = apiStats["wins_bedwars"];
+                                bedwarsStats.losses = apiStats["losses_bedwars"];
+
+                                // Limit to 10 games
+                                if (winlossList.children.length > 10) {
+                                    count = winlossList.children.length - 10;
+
+                                    // Remove older games
+                                    for (var index = 0; index < count; index += 1) {
+                                        winlossList.removeChild(winlossList.children[0])
+                                    }
+                                }
+                            }
                         }
 
                         // SkyWars
@@ -147,6 +188,7 @@
                     });
                 } else {
                     winstreakEl.innerText = "?";
+                    winlossEl.innerText = "?";
                 }
             }
         });
